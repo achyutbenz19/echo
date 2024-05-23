@@ -79,4 +79,4 @@ class SpeechToTextManager:
         """
         
         with open("current_transcription.txt", "a") as f:
-            f.write(f"{self.guild.get_member(int(user_id))}: {transcription}\n")
+            f.write(f"@{self.guild.get_member(int(user_id))}: {transcription}\n")

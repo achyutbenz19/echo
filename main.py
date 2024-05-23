@@ -19,7 +19,7 @@ async def on_ready():
     asyncio.create_task(voice_client_culler.start())
 
 @bot.slash_command()
-async def start_transcription(ctx):
+async def start(ctx):
     voice = ctx.author.voice
     if not voice:
         await ctx.respond("You aren't in a voice channel!")
@@ -32,7 +32,7 @@ async def start_transcription(ctx):
             await ctx.respond("I'm already in your voice channel!")
             return
 
-    await ctx.respond("Joining channel to take notes")
+    await ctx.respond("Joining channel")
     try:
         await connection_manager.connect_to_voice_channel(ctx.guild, voice.channel)
         voice_client_culler.last_voice_activity_times[ctx.guild.id] = datetime.now()
@@ -40,7 +40,7 @@ async def start_transcription(ctx):
         print(f"Failed to connect to voice channel: {e}")
 
 @bot.slash_command()
-async def stop_transcription(ctx):
+async def stop(ctx):
     server_id = ctx.guild.id
 
     if server_id in connection_manager.voice_connections:  
@@ -56,15 +56,13 @@ async def stop_transcription(ctx):
             await sink.vc.disconnect()
 
         sink.speech_to_text_converter.audio_cost_calculator.session_end_time = time.time()
-        await ctx.respond("Stopping transcription tasks")
-        try:
-            with open("current_transcription.txt", "r") as f:
-                transcription_contents = f.read()
+        await ctx.respond("Stopping tasks")
+        
+        with open("current_transcription.txt", "r") as f:
+            transcription_contents = f.read()
+        if transcription_contents:
             await ctx.respond(transcription_contents)
-        except FileNotFoundError:
-            print("Transcription file not found.")
-        except Exception as e:
-            print(f"An error occurred while reading the transcription file: {e}")
+            
         await sink.stop_transcription_tasks()
 
         del connection_manager.voice_connections[server_id]
