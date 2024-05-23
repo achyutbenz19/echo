@@ -57,11 +57,18 @@ async def stop_transcription(ctx):
 
         sink.speech_to_text_converter.audio_cost_calculator.session_end_time = time.time()
         await ctx.respond("Stopping transcription tasks")
+        try:
+            with open("current_transcription.txt", "r") as f:
+                transcription_contents = f.read()
+            await ctx.respond(transcription_contents)
+        except FileNotFoundError:
+            print("Transcription file not found.")
+        except Exception as e:
+            print(f"An error occurred while reading the transcription file: {e}")
         await sink.stop_transcription_tasks()
 
         del connection_manager.voice_connections[server_id]
         del voice_client_culler.last_voice_activity_times[server_id]
-        sink.speech_to_text_converter.audio_cost_calculator.save_cost_metrics()
-
+        
 if __name__ == "__main__":
     bot.run(os.getenv("CLIENT_TOKEN"))

@@ -17,6 +17,7 @@ class SpeechToTextManager:
         self.audio_cost_calculator = audio_cost_calculator
         self.deepgram_client = AsyncPreRecordedClient(DeepgramClientOptions(api_key=DEEPGRAM_API_KEY))
         self.executor = ThreadPoolExecutor()
+        
 
     async def print_speech(self, user_audio_segment, user_id):
         """
@@ -25,6 +26,7 @@ class SpeechToTextManager:
         :param user_id: The user the audio is associated with
         """
         speech_as_text = await self.audio_has_speech(user_audio_segment, user_id)
+        await self.save_transcription(speech_as_text, user_id)
         print(speech_as_text)
 
     async def audio_has_speech(self, user_audio_segment, user_id):
@@ -68,3 +70,13 @@ class SpeechToTextManager:
             print("Something went wrong getting the S2T")
             return NO_SPEECH_FROM_TEXT
         return url_response.results.channels[0].alternatives[0].transcript
+    
+    async def save_transcription(self, transcription, user_id):
+        """
+        Saves the transcription to a file, appending it along with the user ID.
+        :param transcription: The transcription text
+        :param user_id: The ID of the user associated with the transcription
+        """
+        
+        with open("current_transcription.txt", "a") as f:
+            f.write(f"{self.guild.get_member(int(user_id))}: {transcription}\n")

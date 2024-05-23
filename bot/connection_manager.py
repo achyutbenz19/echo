@@ -10,8 +10,8 @@ class VoiceConnection:
         self.sink = sink
         self.voice_client = voice_client
         self.active_voice_channel = active_voice_channel
-        self.deleting = False   # True if this connection is in the process of getting deleted
-
+        self.deleting = False
+        
     def is_connected(self):
         """Check if the voice client is connected."""
         return self.voice_client and self.voice_client.is_connected()
@@ -23,15 +23,18 @@ class VoiceConnection:
     def mark_for_deletion(self):
         self.deleting = True
 
-
 async def audio_callback(sink, channel: discord.TextChannel, *args):
-    await sink.vc.disconnect()  # Disconnect from voice channel
+    await sink.vc.disconnect()
 
+def clear_transcription_file():
+    with open("current_transcription.txt", "w") as f:
+        f.write("")
 
 async def connect_to_voice_channel(guild, voice_channel):
     server_id = guild.id
+    
+    clear_transcription_file()
 
-    # Check if the bot is already connected and recording in the channel
     if server_id in voice_connections:
         voice_connection = voice_connections[server_id]
         if voice_connection.is_connected() and voice_connection.is_recording():
