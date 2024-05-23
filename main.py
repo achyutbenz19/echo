@@ -41,6 +41,14 @@ async def start(ctx):
     except Exception as e:
         print(f"Failed to connect to voice channel: {e}")
 
+def replace_placeholders_with_mentions(content, ctx):
+    for member in ctx.guild.members:
+        placeholders = [f'@{member.name}', f'@{member.nick}', f'@{member.global_name}']
+        for placeholder in placeholders:
+            if placeholder and placeholder in content:
+                content = content.replace(placeholder, member.mention)
+    return content
+
 @bot.slash_command()
 async def stop(ctx):
     server_id = ctx.guild.id
@@ -64,7 +72,8 @@ async def stop(ctx):
             transcription_contents = f.read()
         if transcription_contents:
             result = llm.ask_ai(transcription_contents)
-            await ctx.respond(result)
+            result_with_mentions = replace_placeholders_with_mentions(result, ctx)
+            await ctx.respond(result_with_mentions)
             
         await sink.stop_transcription_tasks()
 
