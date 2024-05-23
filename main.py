@@ -8,10 +8,12 @@ from datetime import datetime
 from discord.sinks import RecordingException
 from bot.voice_client_culler import VoiceClientCuller 
 from bot import connection_manager
+from ai.llm import LLM
 
 load_dotenv()
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.default(), help_command=None)
 voice_client_culler = VoiceClientCuller(bot)
+llm = LLM()
 
 @bot.event
 async def on_ready():
@@ -32,7 +34,7 @@ async def start(ctx):
             await ctx.respond("I'm already in your voice channel!")
             return
 
-    await ctx.respond("Joining channel")
+    await ctx.respond("Joining channel...")
     try:
         await connection_manager.connect_to_voice_channel(ctx.guild, voice.channel)
         voice_client_culler.last_voice_activity_times[ctx.guild.id] = datetime.now()
@@ -56,12 +58,13 @@ async def stop(ctx):
             await sink.vc.disconnect()
 
         sink.speech_to_text_converter.audio_cost_calculator.session_end_time = time.time()
-        await ctx.respond("Stopping tasks")
+        await ctx.respond("Wrapping up...")
         
         with open("current_transcription.txt", "r") as f:
             transcription_contents = f.read()
         if transcription_contents:
-            await ctx.respond(transcription_contents)
+            result = llm.ask_ai(transcription_contents)
+            await ctx.respond(result)
             
         await sink.stop_transcription_tasks()
 

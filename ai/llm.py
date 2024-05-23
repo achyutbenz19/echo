@@ -16,6 +16,4 @@ class LLM():
     def ask_ai(self, query):
         chain = self.prompt | self.chat
         return chain.invoke({"text": query}).content
-        
-llm=LLM()
-print(llm.ask_ai("What is life?"))
+    
