@@ -66,11 +66,11 @@ async def stop(ctx):
             await sink.vc.disconnect()
 
         sink.speech_to_text_converter.audio_cost_calculator.session_end_time = time.time()
-        await ctx.respond("Wrapping up...")
         
         with open("current_transcription.txt", "r") as f:
             transcription_contents = f.read()
         if transcription_contents:
+            await ctx.respond("Wrapping up...")
             result = llm.ask_ai(transcription_contents)
             result_with_mentions = replace_placeholders_with_mentions(result, ctx)
             await ctx.respond(result_with_mentions)
