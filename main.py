@@ -11,7 +11,9 @@ from bot import connection_manager
 from ai.llm import LLM
 
 load_dotenv()
-bot = commands.Bot(command_prefix='/', intents=discord.Intents.default(), help_command=None)
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix='/', intents=intents, help_command=None)
 voice_client_culler = VoiceClientCuller(bot)
 llm = LLM()
 
