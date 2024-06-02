@@ -13,7 +13,7 @@ class LLM():
         self.human = "{text}"
         self.prompt = ChatPromptTemplate.from_messages([("system", self.system_prompt), ("human", self.human)])
         
-    def get_ctx(ctx):
+    def get_ctx(self, ctx):
         self.ctx = ctx
     
     def ask_ai(self, query):
