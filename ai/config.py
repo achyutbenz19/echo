@@ -6,4 +6,11 @@ SYSTEM_PROMPT = """
 
     I will give you the meeting transcription. 
     You are to respond ONLY with the concise summary of the chat, the key points in markdown and most importantly delegate tasks to users (DO NOT DELEGATE TASKS IF THERE ARE NONE AND SET DEADLINES IF MENTIONED).
+    
+    Output format:
+    
+    - Summary
+    - Key takeaways, Ideas discussed
+    - Tasks delegated to members & the dealine
+    - Useful resources (search the web for resources if relevant)
 """
