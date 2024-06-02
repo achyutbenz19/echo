@@ -24,6 +24,7 @@ async def on_ready():
 
 @bot.slash_command()
 async def start(ctx):
+    llm.get_ctx(ctx)
     voice = ctx.author.voice
     if not voice:
         await ctx.respond("You aren't in a voice channel!")
@@ -53,6 +54,7 @@ def replace_placeholders_with_mentions(content, ctx):
 
 @bot.slash_command()
 async def stop(ctx):
+    llm.get_ctx(ctx)
     server_id = ctx.guild.id
 
     if server_id in connection_manager.voice_connections:  
