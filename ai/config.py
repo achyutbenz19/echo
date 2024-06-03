@@ -11,6 +11,6 @@ SYSTEM_PROMPT = """
     
     - Summary
     - Key takeaways, Ideas discussed
-    - Tasks delegated to members & the dealine
+    - Tasks delegated to members & the dealine (You must mention the specific user using, for example @+*their username*)
     - Useful resources (search the web for resources if relevant)
 """
