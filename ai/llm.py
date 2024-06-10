@@ -10,7 +10,7 @@ load_dotenv()
 
 class LLM():
     def __init__(self):
-        self.tools = llm_tools
+        self.tools = []
         self.chat = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768").bind_tools(self.tools)
         self.system_prompt = SYSTEM_PROMPT
         self.agent_prompt = prompt = ChatPromptTemplate.from_messages([
